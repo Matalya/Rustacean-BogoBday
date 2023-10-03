@@ -3,14 +3,14 @@ use rand::{thread_rng, Rng};
 use std::thread::sleep;
 use std::time::Duration;
 
-const STR: &str = "Happy rustacian birthday, Speykious!";
+const STR: &str = "Happy rustacean birthday, Speykious!";
 const UPPER_ABC: [char; 26] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 const LOWER_ABC: [char; 26] = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
 fn printf(astring:&String) {
     print!("{astring}\r");
     stdout().flush().unwrap();
-    let five = Duration::from_millis(250);
+    let five = Duration::from_millis(150);
     sleep(five);
 }
 
