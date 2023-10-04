@@ -42,12 +42,10 @@ fn main() {
     }
 
     while bogo_msg != MESSAGE {
-        for i in 0..bogo_msg.len() {
-            if bogo_msg[i] == MESSAGE[i] {
-                continue;
+        for (bogo_char, mess_char) in bogo_msg.iter_mut().zip(MESSAGE) {
+            if bogo_char != mess_char {
+                *bogo_char = pick_random_char(*mess_char);
             }
-
-            bogo_msg[i] = pick_random_char(MESSAGE[i]);
         }
         print_message(&bogo_msg).unwrap();
     }
