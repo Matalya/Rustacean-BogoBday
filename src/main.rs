@@ -36,7 +36,7 @@ fn rand_text(length: usize) -> Vec<u8> {
 fn main() {
     let mut bogo_msg = Vec::new();
 
-    for i in 0..MESSAGE.len() {
+    for i in 1..=MESSAGE.len() {
         bogo_msg = rand_text(i);
         print_message(&bogo_msg).unwrap();
     }
