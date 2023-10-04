@@ -1,60 +1,58 @@
-use std::io::{stdout, Write};
 use rand::{thread_rng, Rng};
+use std::error::Error;
+use std::io::{stdout, Write, self};
 use std::thread::sleep;
 use std::time::Duration;
 
-const STR: &str = "Happy rustacean birthday, Speykious!";
-const UPPER_ABC: [char; 26] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-const LOWER_ABC: [char; 26] = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+const MESSAGE: &[u8] = b"Happy rustacean birthday, Speykious!";
 
-fn printf(astring:&String) {
-    print!("{astring}\r");
-    stdout().flush().unwrap();
-    let five = Duration::from_millis(150);
-    sleep(five);
+fn print_message(astring: &[u8]) -> io::Result<()> {
+    stdout().write_all(b"\r")?;
+    stdout().write_all(astring)?;
+    stdout().flush()?;
+
+    sleep(Duration::from_millis(100));
+    Ok(())
 }
 
-fn pick_char(character: char) -> char {
+fn pick_random_char(character: u8) -> u8 {
     let mut rng = thread_rng();
-    if character.is_uppercase() {
-        UPPER_ABC[rng.gen_range(0..UPPER_ABC.len())]
-    } else if character.is_whitespace() {
-        ' '
-    } else if character.is_ascii_punctuation() {
-        character
-    } else {
-        LOWER_ABC[rng.gen_range(0..LOWER_ABC.len())]
+
+    match character {
+        c if c.is_ascii_uppercase() => rng.gen_range(b'A'..=b'Z'),
+        c if c.is_ascii_whitespace() => b' ',
+        c if c.is_ascii_punctuation() => c,
+        _ => rng.gen_range(b'a'..=b'z'),
     }
 }
 
-fn rand_text(length: usize) -> String {
-    let mut accumulator = String::new();
-    for i in 0..=length {
-        let character = STR.chars().nth(i).unwrap();
-        accumulator.push(pick_char(character));
-    }
-    accumulator
+fn rand_text(length: usize) -> Vec<u8> {
+    (MESSAGE.iter())
+        .take(length)
+        .copied()
+        .map(pick_random_char)
+        .collect::<_>()
 }
 
-fn extract_char(string: &str, i: usize) -> char {
-    string.chars().nth(i).unwrap()
-}
-fn main() {
-    let mut string = String::new();
+fn main() -> Result<(), Box<dyn Error>> {
+    let mut bogo_msg = Vec::new();
 
-    for i in 0..STR.len() {
-        string = rand_text(i);
-        printf(&string);
+    for i in 1..=MESSAGE.len() {
+        bogo_msg = rand_text(i);
+        print_message(&bogo_msg)?;
     }
-    while string != STR {
-        for i in 0..string.len() {
-            if extract_char(&string, i) == extract_char(STR, i) {
-                continue;
+
+    while bogo_msg != MESSAGE {
+        for (bogo_char, mess_char) in bogo_msg.iter_mut().zip(MESSAGE) {
+            if bogo_char != mess_char {
+                *bogo_char = pick_random_char(*mess_char);
             }
-            let character = extract_char(STR, i);
-            string.replace_range(i..=i, &pick_char(character).to_string());
         }
-        printf(&string);
+        print_message(&bogo_msg)?;
     }
-    println!("{string}");
+
+    print_message(&bogo_msg)?;
+    println!();
+
+    Ok(())
 }
