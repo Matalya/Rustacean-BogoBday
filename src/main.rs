@@ -1,4 +1,5 @@
 use rand::{thread_rng, Rng};
+use std::error::Error;
 use std::io::{stdout, Write, self};
 use std::thread::sleep;
 use std::time::Duration;
@@ -33,12 +34,12 @@ fn rand_text(length: usize) -> Vec<u8> {
         .collect::<_>()
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let mut bogo_msg = Vec::new();
 
     for i in 1..=MESSAGE.len() {
         bogo_msg = rand_text(i);
-        print_message(&bogo_msg).unwrap();
+        print_message(&bogo_msg)?;
     }
 
     while bogo_msg != MESSAGE {
@@ -47,9 +48,11 @@ fn main() {
                 *bogo_char = pick_random_char(*mess_char);
             }
         }
-        print_message(&bogo_msg).unwrap();
+        print_message(&bogo_msg)?;
     }
 
-    print_message(&bogo_msg).unwrap();
+    print_message(&bogo_msg)?;
     println!();
+
+    Ok(())
 }
