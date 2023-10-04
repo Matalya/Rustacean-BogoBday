@@ -10,7 +10,7 @@ fn print_message(astring: &[u8]) -> io::Result<()> {
     stdout().write_all(astring)?;
     stdout().flush()?;
 
-    sleep(Duration::from_millis(150));
+    sleep(Duration::from_millis(100));
     Ok(())
 }
 
